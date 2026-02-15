@@ -1,233 +1,75 @@
-import time 
-from datetime import datetime
+import customtkinter as CTk
 
-print("Добро пожаловать в мой калькулятор")
-print("__________________________________")
+# Настройка темы
+CTk.set_appearance_mode("dark")
+CTk.set_default_color_theme("blue")
 
-
-
-dt_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-def history(oper, res):
-    with open ('hist.txt', 'a', encoding='utf-8') as f:
-        f.write (f"[{dt_now}] | Действие: {oper} Результат: {res} \n")
-
-def chek_hist(cmd):
-  try:
-    with open('hist.txt', 'r', encoding='utf-8') as f: 
-        content = f.read()
-    if not content:
-        print("файл пуст.")
-    else:
-        print(content)
-  except FileNotFoundError:
-    print("нет файла")
+root = CTk.CTk()
+root.geometry("640x480")
+root.title("hi")
 
 
-
-# давление воды 
-def water_pressure(cmd):
-  try:
-    p = float(input("введите плостность жидкости:"))
-    h = float(input("введите высоту столба жидкости:"))
-    print("вычислеие....")
-    time.sleep(2)
-    print("гидростатическое давление равно:")
-    res = p * h * 9.8
-    oper = "wpr"
-    print(res)
-
-    history(f"Действие: {oper} ||Результат: ", res)
+tabview = CTk.CTkTabview(root)
+tabview.pack(padx=20, pady=20, fill="both", expand=True)
+tab_doc = tabview.add("Привет!")
+tab_grv = tabview.add("сила тяжести")
+tab_wpr = tabview.add("давление воды")
 
 
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
+# grv
+def grv():
+    val = en_grv.get()
+    num = float(val)
+    res = num * 9.81
+
+    lab_grv.configure(text= f"Результат: {res:.2f}")
+
+en_grv = CTk.CTkEntry(tab_grv, justify="left", width=200, height=30, placeholder_text="введите массу", placeholder_text_color="gray")
+en_grv.grid(row=0, column=0, columnspan=4, padx=10, pady=20)
+
+btn_grv = CTk.CTkButton(tab_grv, text="расчитать", command=grv, width=200, height=30)
+btn_grv.grid(row= 1, column=0, columnspan=4, padx=10, pady=10)
+
+lab_grv = CTk.CTkLabel(tab_grv,text="", width=200, height=30)
+lab_grv.grid(row=2, column=0, columnspan=4, padx=10, pady=10)
 
 
-# давление твердого тела
-def solid_pressure(cmd):
-  try:
-    f = float(input("введите силу в ньютонах(H):"))
-    s = float(input("введите площадь поверхности:"))
-    print("вычислеие....")
-    time.sleep(2)
-    print("давление твердого тела равно:")
-    res = f / s
-    oper = "spr"
-    print(res)
-    history(f"Действие: {oper} ||Результат: ", res)
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
-# закон Гука
-def elastic_force(cmd):
-  try:
-    k = float(input("введите коэффициент жесткости тела:"))
-    l = float(input("введите удлинение или деформацию тела:"))
-    print("вычислеие....")
-    time.sleep(2)
-    print("сила упругости равна:")
-    res = k * l 
-    oper = "elf" 
-    print(res)
-    history(f"Действие: {oper} ||Результат: ", res)
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
+# wpr 
+def wpr():
+    val1 = en_wpr.get()
+    val2 = en2_wpr.get()
+    num1 = float(val1)
+    num2 = float(val2)
+    res = num1 * num2 * 9.81
 
-# плотность
-def density(cmd):
-  try:
-    m = float(input("введите массу:"))
-    v = float(input("введите объем:"))
-    res = m/v 
-    oper = "den"
-    print("вычислеие....")
-    time.sleep(2)
-    print(res)
-    history(f"Действие: {oper}||Результат: ", res)
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
-
-# сила тяжести
-def gravity(cmd):
-  try:
-    m = float(input("введите массу:"))
-    res = m * 10 
-    oper = "grv"
-    print("вычислеие....")
-    time.sleep(2)
-    print(res)
-    history(f"Действие: {oper}||Результат: ", res)
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
+    lab_wpr.configure(text= f"Результат: {res}(Паскаль)")
 
 
-# скорость при прямом направлении
-def speed(cmd):
-  try:
-    s = float(input("введите путь:"))
-    t = float(input("введите время:"))
-    res= s / t 
-    oper = "spd"
-    print("вычислеие....")
-    time.sleep(2)
-    print(res)
-    history(f"Действие: {oper}||Результат: ", res)
-  except ValueError:
-    print("ошибка")
-  except ZeroDivisionError:
-    print("ошибка")
+en_wpr = CTk.CTkEntry(tab_wpr, justify="left", width=200, height=30, placeholder_text="введите высоту", placeholder_text_color="gray")
+en_wpr.grid(row=0, column=0, columnspan=4, padx=10, pady=20)
+en2_wpr = CTk.CTkEntry(tab_wpr, justify="left", width=200, height=30, placeholder_text="введите плотсноть", placeholder_text_color="gray")
+en2_wpr.grid(row=1, column=0, columnspan=4, padx=10, pady=20)
+
+btn_wpr = CTk.CTkButton(tab_wpr, text="расчитать", command=wpr, width=200, height=30)
+btn_wpr.grid(row=2, column=0, columnspan=4, padx=10, pady=10)
 
 
+lab_wpr = CTk.CTkLabel(tab_wpr, text="", width=200, height=30)
+lab_wpr.grid(row=3, column=0, columnspan=4, padx=10, pady=10)
 
-# калькулятор 
-def calc2(cmd):
- try:
-   name = input("введите величину(cm2,pa,km/h)")
-   perev = input("введите во что перевести(m2,kpa,m/s)")
-   chis = float(input("введите количество:"))
-   if name.lower() == "cm2" and perev.lower() == "m2":
-      res = chis / 10000
-      print("вычисление....")
-      time.sleep(2)
-      print(res)
-   if name.lower() == "pa" and perev.lower() == "kpa":
-      res = chis / 10000 
-      print("вычислеие....")
-      time.sleep(2)
-      print(res)
-   if name.lower() == "km/h" and perev.lower() == "m/s":
-      res = chis / 3.6 
-      print("вычислеие....")
-      time.sleep(2)
-      print(res)
- except ValueError:
-      print("ошибка")
- except ZeroDivisionError:
-    print("ошибка")
+# doc
+my_font = CTk.CTkFont(family="Arial", size=24, weight="bold")
+
+Lab_doc = CTk.CTkLabel(tab_doc, text="Привет!", width=300, height=10, font=my_font, anchor="w")
+Lab_doc.grid(row=6, column=1, columnspan=4, padx=10, pady=10, sticky="nsew")
+
+lab_doc2 = CTk.CTkLabel(tab_doc, text="Это мой калькулятор по физике", anchor="w")
+lab_doc2.grid(row=7 ,column=1, columnspan=4, padx=3, pady=3, sticky="nsew")
+
+lab_doc3 = CTk.CTkLabel(tab_doc, text="формулы которые используються: P=pgh,F=mg", anchor="w")
+lab_doc3.grid(row=8 ,column=1, columnspan=4, padx=3, pady=3, sticky="nsew")
 
 
- 
-def calc(cmd):
-  num1 = float(input("введите число 1:"))
-  num2 = float(input("введите число 2:"))
-  go = input("введите действие:")
-  if go == "+":
-    print(num1 + num2)
-  elif go == "-":
-    print(num1 - num2)
-  elif go == "*":
-    print(num1 * num2)
-  elif go == "/":
-    print(num1 / num2)
-  else:
-    print("доступны только действия: * / + -")
-
-
-
-
-
-
-
-
-
-
-
-
-
-# документация
-def doc(cmd):
-  print("!Пишите сразу готовые велчины измерения никаких сантиметров2 и тп ")
-  print("!Иначе калькулятор посчитает неправильно")
-  print("!Для преобразование величин есть калькулятор(calc2),на данный момент там 3 еденицы для перевода")
-
-# help 
-def help(cmd):
-    print("список команд:")
-    print(" wpr-давление воды\n spr-давление твердого тела\n elf-закон Гука\n back-выход\n chhs-просмотр истории\n den-плотность\n")
-    print(" grv-сила тяжести\n spd-скорость при прямом направлении\n cmd-докуменатция,предупреждения\n calc-простой калькулятор,выводит сразу несколько действий")
-    print(" calc2-калькулятор,переводит величины\n")
-
-
-
-
-
-# команды
-while True:
-    cmd = input("введите команду(список команд-help):")
-    if cmd.lower() == "wpr":
-        water_pressure(cmd)
-    elif cmd.lower() == "spr":
-         solid_pressure(cmd)
-    elif cmd.lower() == "elf":
-         elastic_force(cmd)
-    elif cmd.lower() == "den":
-           density(cmd)
-    elif cmd.lower() == "grv":
-            gravity(cmd)
-    elif cmd.lower() == "spd":
-            speed(cmd)
-    elif cmd.lower() == "calc2":
-           calc(cmd)
-    elif cmd.lower() == "calc":
-           calc(cmd)
-    elif cmd.lower() == "help":
-           help(cmd)
-    elif cmd.lower() == "chhs":
-           chek_hist(cmd)
-    elif cmd.lower() == "doc":
-           doc(cmd)
-    elif cmd.lower() == "back":
-            print("back\n<------------")
-            break 
 
 
 
